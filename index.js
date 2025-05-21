@@ -27,16 +27,25 @@ async function run() {
     const plantCollection = client.db("PlantsDB").collection("AllPlants");
 
     app.post("/plants", async (req, res) => {
-      const newUsers = req.body;
+      const newPlant = {
+        ...req.body,
+        addedDate: req.body.addedDate
+          ? new Date(req.body.addedDate)
+          : new Date(),
+      };
 
-      const result = await plantCollection.insertOne(newUsers);
+      const result = await plantCollection.insertOne(newPlant);
       res.send(result);
     });
 
-    app.get("/plants", async (req, res) => {
-      const cursor = plantCollection.find();
-      const result = await cursor.toArray();
-      res.send(result);
+    app.get("/plants/latest", async (req, res) => {
+      const latestPlants = await plantCollection
+        .find()
+        .sort({ addedDate: -1, _id: -1 }) 
+        .limit(6)
+        .toArray();
+
+      res.send(latestPlants);
     });
 
     app.get("/plants", async (req, res) => {
