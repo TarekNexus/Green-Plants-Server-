@@ -23,7 +23,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
   
-    await client.connect()
+   
     const plantCollection = client.db("PlantsDB").collection("AllPlants");
 
     app.post("/plants", async (req, res) => {
