@@ -42,7 +42,7 @@ async function run() {
       const latestPlants = await plantCollection
         .find()
         .sort({ addedDate: -1, _id: -1 }) 
-        .limit(6)
+        .limit(8)
         .toArray();
 
       res.send(latestPlants);
