@@ -23,7 +23,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
   
-    
+    await client.connect()
     const plantCollection = client.db("PlantsDB").collection("AllPlants");
 
     app.post("/plants", async (req, res) => {
@@ -106,8 +106,25 @@ async function run() {
       res.send(result);
     });
 
-   
+  //  Dashboard      
 
+  app.get('/count', async (req, res) => {
+  try {
+    const count = await plantCollection.estimatedDocumentCount()
+    res.send({ count }); // send as object for easy parsing
+  } catch (err) {
+    res.status(500).send({ error: 'Failed to get total count' });
+  }
+});
+app.get('/my-items/count', async (req, res) => {
+  const email = req.query.email;
+  try {
+    const count = await plantCollection.countDocuments({ userEmail: email });
+    res.send({ count });
+  } catch (err) {
+    res.status(500).send({ error: 'Failed to get user items count' });
+  }
+});
 
 
 
